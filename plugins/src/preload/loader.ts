@@ -77,10 +77,27 @@ const waitable = Promise.all(
   plugins.map(loadPlugin)
 );
 
+async function checkCamille(): Promise<boolean> {
+  try {
+    const res = await fetch('http://localhost:16688/api/pengu/ping', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message: 'Hello from Camille plugin!' }),
+    });
+    return res.ok;
+  } catch {
+    return false;
+  }
+}
+
 // Listen for the first rcp, it's also the first listener
 rcp.preInit('rcp-fe-common-libs', async function () {
   // Wait for plugins load
-  await waitable;
+  let camilleReady = await checkCamille();
+  if (camilleReady){
+    await waitable;
+  }
+
 });
 
 export { }

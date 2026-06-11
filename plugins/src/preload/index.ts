@@ -7,4 +7,4 @@ import { version } from '../../package.json';
 window.Pengu.version = version;
 Object.freeze(window.Pengu);
 
-console.info(`%c Pengu Loader v${version} `, 'background: #000; color: #fff;');
+console.info(`%c Camille Loader v${version} `, 'background: #000; color: #fff;');
