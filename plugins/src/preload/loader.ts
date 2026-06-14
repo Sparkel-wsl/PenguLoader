@@ -93,10 +93,11 @@ async function checkCamille(): Promise<boolean> {
 // Listen for the first rcp, it's also the first listener
 rcp.preInit('rcp-fe-common-libs', async function () {
   // Wait for plugins load
-  let camilleReady = await checkCamille();
+  /*let camilleReady = await checkCamille();
   if (camilleReady){
     await waitable;
-  }
+  }*/
+  await waitable;
 
 });
 

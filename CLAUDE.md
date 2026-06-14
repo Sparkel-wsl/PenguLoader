@@ -6,6 +6,16 @@
 
 Pengu Loader 是一个英雄联盟客户端的插件加载器。它通过注入到基于 CEF 的 LoL 客户端中，加载 JavaScript 插件并暴露原生 API。
 
+## 首次克隆
+
+```bash
+git clone --recurse-submodules <repo-url>
+# 或者如果已经克隆了：
+git submodule update --init --recursive
+```
+
+CEF C API 头文件位于 `core/cef/`（子模块，分支 `5359`）。没有这个子模块，core 项目无法编译。
+
 ## 构建
 
 ```bash
@@ -19,8 +29,27 @@ msbuild pengu.sln /t:Restore,Build /m /p:Configuration=Release /p:Platform=x64
 开发时，先用 **Debug** 模式构建 core，然后运行 `pnpm dev` 实现热重载：
 
 ```bash
-cd plugins && pnpm dev   # 开发服务器位于 localhost:3001，视图支持 HMR，预加载脚本变更会触发整页重载
+# 先构建 Debug 版 core（生成 bin/Debug/core.dll 供开发使用）
+msbuild pengu.sln /t:Restore,Build /m /p:Configuration=Debug /p:Platform=x64
+
+# 启动 dev server（localhost:3001，视图 HMR，预加载变更触发整页重载）
+cd plugins && pnpm dev
 ```
+
+仅修改预加载脚本时，不需要完整的 dev server，直接运行 dev 构建然后手动重启客户端即可：
+
+```bash
+cd plugins && pnpm build-dev
+```
+
+本仓库没有自动化测试。验证功能需要启动英雄联盟客户端进行手动测试。
+
+## 版本号
+
+版本号存储在三个地方，发版时需要同步更新：
+- `loader/Program.cs` — `public const string VERSION = "X.Y.Z"`
+- `plugins/package.json` — `"version"` 字段
+- `scripts/setup.iss` — Inno Setup 安装包脚本中的版本号
 
 ## 解决方案结构
 
@@ -67,11 +96,12 @@ DLL 通过可执行文件名判断自己被加载到哪个进程中：
 - `Main/DataStore.cs` — 对 `datastore` 文件进行异或解密，用于调试
 - `App.xaml` — ModernWpfUI 主题，强调色 `#00a1ff`，通过合并 ResourceDictionary 实现多语言
 
-### Plugins (`plugins/`) — TypeScript、SolidJS、Vite
+### Plugins (`plugins/`) — TypeScript、SolidJS、Vite、TailwindCSS
 
 - `src/preload/` — 注入到 LoL 客户端中的脚本。设置 `window.Pengu.version`，暴露原生 API 包装器。
-- `src/views/` — SolidJS 应用，提供客户端内插件浏览界面（带搜索的 CommandBar）。
+- `src/views/` — SolidJS 应用，提供客户端内插件浏览界面（带搜索的 CommandBar）。可在浏览器中直接打开 `https://localhost:3001` 单独调试。
 - `vite.config.ts` — 将预加载脚本构建为 IIFE 格式，构建后生成 `dist/preload.g.h`（包含脚本字节的 C 头文件），用于嵌入 core.dll 的 Release 构建。在 Debug 模式下，`renderer.cc` 改为从磁盘读取 `dist/preload.js`。
+- pnpm 版本锁定为 9（CI 中使用 `pnpm/action-setup@v4` + `version: 9`）。
 
 ## 配置文件格式
 

@@ -31,7 +31,21 @@
       "Bash(dotnet --version)",
       "Bash(where dotnet *)",
       "Bash(winget install *)",
-      "Bash(dotnet build *)"
+      "Bash(dotnet build *)",
+      "Bash(corepack --version)",
+      "Bash(corepack prepare *)",
+      "Bash(where msbuild *)",
+      "Bash(git add *)",
+      "Bash(git commit -m 'feat: 初始化 camille-plugin Vue 3 插件工程 *)",
+      "Bash(cargo check *)",
+      "Bash(tasklist)",
+      "Bash(taskkill /F /IM Camille.exe)",
+      "Bash(cargo clean *)",
+      "Bash(git commit -m 'feat: WebSocket 服务 & 队友胜率推送到插件 *)",
+      "Bash(git --no-pager log --oneline -3)",
+      "Bash(cp \"G:/dev/PenguLoader/bin/core.dll\" \"G:/dev/PenguLoader/bin/core.dll.bak\")",
+      "Bash(cp \"G:/dev/PenguLoader/core/bin/core.dll\" \"G:/dev/PenguLoader/bin/core.dll\")",
+      "Bash(cp -r \"G:/project/lol_look_look/src-tauri/resources/pengu/plugins/camille-plugin/\"* \"G:/project/lol_look_look/src-tauri/target/debug/resources/pengu/plugins/camille/\")"
     ]
   }
 }
