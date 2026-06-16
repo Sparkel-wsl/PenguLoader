@@ -43,10 +43,10 @@ async function doCheckUpdate() {
 
 export function Welcome() {
   onMount(() => {
-    toast.success(_t('active_status'), {
+    /*toast.success(_t('active_status'), {
       position: 'bottom-left',
       duration: 7000
-    });
+    });*/
   });
 
   onMount(doCheckUpdate);
