@@ -260,4 +260,9 @@ namespace config::options
 #endif
         return get_config_value_int(__func__, 0);
     }
+
+    bool disable_window_restructure()
+    {
+        return get_config_value_bool("DisableWindowRestructure", false);
+    }
 }

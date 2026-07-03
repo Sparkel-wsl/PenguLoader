@@ -79,13 +79,16 @@ void browser::setup_window(cef_browser_t *browser)
     HWND widgetWin = FindWindowExA(browserWin, NULL, "Chrome_WidgetWin_0", NULL);
     //HWND widgetHost = FindWindowExA(widgetWin, NULL, "Chrome_RenderWidgetHostHWND", NULL);
 
-    // Ensure transparency effect.
-    //   hide Chrome_RenderWidgetHostHWND
-    //ShowWindow(widgetHost, SW_HIDE);
-    //   hide CefBrowserWindow
-    ShowWindow(browserWin, SW_HIDE);
-    //   bring Chrome_WidgetWin_0 to top-level children
-    SetParent(widgetWin, rclient);
+    if (!config::options::disable_window_restructure())
+    {
+        // Ensure transparency effect.
+        //   hide Chrome_RenderWidgetHostHWND
+        //ShowWindow(widgetHost, SW_HIDE);
+        //   hide CefBrowserWindow
+        ShowWindow(browserWin, SW_HIDE);
+        //   bring Chrome_WidgetWin_0 to top-level children
+        SetParent(widgetWin, rclient);
+    }
 #elif OS_MAC
     browser::window = host->get_window_handle(host);
 #endif
