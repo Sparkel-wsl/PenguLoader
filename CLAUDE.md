@@ -6,6 +6,13 @@
 
 Pengu Loader 是一个英雄联盟客户端的插件加载器。它通过注入到基于 CEF 的 LoL 客户端中，加载 JavaScript 插件并暴露原生 API。
 
+## 前置条件
+
+```bash
+git submodule update --init   # 拉取 CEF 头文件（core/cef/）
+cd plugins && pnpm install    # 安装前端依赖
+```
+
 ## 首次克隆
 
 ```bash
@@ -24,6 +31,22 @@ cd plugins && pnpm install && pnpm build && cd ..
 
 # 2. 构建整个解决方案（输出到 bin/）
 msbuild pengu.sln /t:Restore,Build /m /p:Configuration=Release /p:Platform=x64
+```
+
+### 单独构建各个组件
+
+```bash
+# 仅构建预加载脚本（Release）
+cd plugins && pnpm build
+
+# 仅构建预加载脚本（Debug，不做 minify）
+cd plugins && pnpm build-dev
+
+# 仅构建 core.dll（需要先构建预加载脚本生成 .h 头文件）
+msbuild core/core.vcxproj -t:Build -p:Configuration=Release -p:Platform=x64
+
+# 仅构建 WPF 启动器
+dotnet build loader/loader.csproj -c Release -p:Platform="Any CPU"
 ```
 
 开发时，先用 **Debug** 模式构建 core，然后运行 `pnpm dev` 实现热重载：
@@ -50,6 +73,8 @@ cd plugins && pnpm build-dev
 - `loader/Program.cs` — `public const string VERSION = "X.Y.Z"`
 - `plugins/package.json` — `"version"` 字段
 - `scripts/setup.iss` — Inno Setup 安装包脚本中的版本号
+
+> 如果只在修改 `preload/`，用 `pnpm build-dev` 更快，然后手动重载客户端即可。
 
 ## 解决方案结构
 
@@ -120,6 +145,57 @@ DLL 通过可执行文件名判断自己被加载到哪个进程中：
 - 子文件夹：`plugins/插件名/index.js`
 - 按作者分组：`plugins/@作者名/插件名/index.js`
 - 重命名为 `.js_` 可禁用插件；使用 `@author` 和 `@link` JSDoc 标签标注元数据
+
+### 插件生命周期
+
+插件导出两个入口函数：
+- `init({ rcp, socket, meta? })` — 插件加载后立即调用，可异步
+- `load()` / `default()` — 在 `window.load` 事件时调用
+
+加载顺序见 `plugins/src/preload/loader.ts`，所有插件通过 `import()` 并行加载。
+
+### 插件 API 一览
+
+C++ 层通过 V8 在 `window` 上暴露以下对象：
+
+**`window.Pengu`**（只读，由 C++ 在预加载脚本执行前注入）：
+- `Pengu.version` — 加载器版本号
+- `Pengu.plugins` — 已扫描到的插件入口路径数组
+- `Pengu.isMac` — 是否为 macOS
+- `Pengu.superPotato` — 是否开启了超低配模式
+
+**`window.__native`**（原生函数，仅在预加载脚本中使用，随后被删除）：
+- `OpenDevTools()`、`OpenPluginsFolder()`、`ReloadClient()`
+- `SetWindowTheme()`、`SetWindowVibrancy()`
+- `LoadDataStore()`、`SaveDataStore()`
+
+**预加载脚本包装的 API**（供插件直接调用）：
+- `window.openDevTools()` — 打开 Chrome DevTools
+- `window.openPluginsFolder(path?)` — 在资源管理器中打开插件目录
+- `window.reloadClient()` — 重载整个客户端
+- `window.restartClient()` — 通过 Riot Client API 重启 UX 进程
+- `window.getScriptPath()` — 获取当前脚本路径
+- `window.DataStore` — 持久化键值存储，`has(key)` / `get(key, fallback?)` / `set(key, value)` / `remove(key)`
+- `window.Effect` — 窗口视觉效果，`apply(name, options)` / `clear()` / `setTheme(theme)`
+- `window.rcp` — Riot Client Plugin 钩子系统：
+  - `rcp.preInit(name, callback)` — 在插件初始化前拦截
+  - `rcp.postInit(name, callback)` — 在插件初始化后获取其 API
+  - `rcp.whenReady(name|names[])` — 等待一个或多个插件就绪
+  - `rcp.get(name)` — 同步获取已就绪插件的 API
+- `window.socket` — LCU WebSocket 事件订阅：
+  - `socket.observe(api, listener)` — 订阅 LCU API 事件（如 `"/lol-summoner/v1/current-summoner"` 或 `"all"`）
+  - `socket.disconnect(api, listener)` — 取消订阅
+
+## 多语言
+
+WPF 启动器支持 10 种语言，通过 `loader/Languages/` 下的 XAML ResourceDictionary 文件实现：
+`de-DE`、`en-US`、`es-ES`、`fr-FR`、`ja-JP`、`pt-BR`、`ru-RU`、`tr-TR`、`vi-VN`、`zh-CN`。
+
+语言由 `config` 文件中的 `Language` 键控制。
+
+## 测试
+
+本项目没有自动化测试（无 unit test、e2e test 等）。
 
 ## CI
 

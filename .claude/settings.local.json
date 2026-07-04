@@ -32,6 +32,11 @@
       "Bash(where dotnet *)",
       "Bash(winget install *)",
       "Bash(dotnet build *)",
+      "Bash(pnpm build-dev *)",
+      "Bash(C:/Program Files/Microsoft Visual Studio/2022/Community/MSBuild/Current/Bin/amd64/MSBuild.exe *)",
+      "WebSearch",
+      "Bash(curl -s \"https://raw.githubusercontent.com/tauri-apps/tauri/dev/crates/tauri-bundler/src/bundle/windows/msi/main.wxs\")"
+      "Bash(dotnet build *)",
       "Bash(corepack --version)",
       "Bash(corepack prepare *)",
       "Bash(where msbuild *)",

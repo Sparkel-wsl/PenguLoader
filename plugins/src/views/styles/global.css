@@ -7,6 +7,7 @@ body {
   font-family: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
 }
 
+/*
 div[id^=index_loading_div] {
   background-color: #010a13;
 }
@@ -17,7 +18,7 @@ div[id^=index_loading_div]>img {
 
 div[id^=index_loading_div]::before {
   content: '';
-  background-image: url(/lol-game-data/assets/v1/profile-icons/4216.jpg);
+  !*background-image: url(/lol-game-data/assets/v1/profile-icons/4216.jpg);*!
   background-repeat: no-repeat;
   background-size: cover;
   width: 144px;
@@ -32,4 +33,4 @@ div[id^=index_loading_div]:after {
   font-family: 'Inter', sans-serif;
   font-size: 1rem;
   text-transform: uppercase;
-}
+}*/

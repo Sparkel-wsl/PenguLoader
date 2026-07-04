@@ -349,6 +349,8 @@ namespace config
         bool use_riotclient();
         bool use_proxy();
 
+        bool disable_window_restructure();
+
         // undocumented
         int debug_port();
     }
