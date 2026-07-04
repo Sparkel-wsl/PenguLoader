@@ -1,6 +1,6 @@
 import './api';
 import './super-potato';
-import './load-hooks';
+//import './load-hooks';
 import './loader';
 import { version } from '../../package.json';
 

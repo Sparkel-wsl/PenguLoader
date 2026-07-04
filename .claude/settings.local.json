@@ -50,7 +50,10 @@
       "Bash(git --no-pager log --oneline -3)",
       "Bash(cp \"G:/dev/PenguLoader/bin/core.dll\" \"G:/dev/PenguLoader/bin/core.dll.bak\")",
       "Bash(cp \"G:/dev/PenguLoader/core/bin/core.dll\" \"G:/dev/PenguLoader/bin/core.dll\")",
-      "Bash(cp -r \"G:/project/lol_look_look/src-tauri/resources/pengu/plugins/camille-plugin/\"* \"G:/project/lol_look_look/src-tauri/target/debug/resources/pengu/plugins/camille/\")"
+      "Bash(cp -r \"G:/project/lol_look_look/src-tauri/resources/pengu/plugins/camille-plugin/\"* \"G:/project/lol_look_look/src-tauri/target/debug/resources/pengu/plugins/camille/\")",
+      "Bash(git commit -m 'fix: 先启动LOL后开Camille时符文图片无法加载 *)",
+      "Bash(cp \"G:/dev/PenguLoader/bin/core.dll\" \"G:/project/lol_look_look/src-tauri/resources/pengu/core.dll\")",
+      "Bash(cp \"G:/dev/PenguLoader/bin/core.dll\" \"G:/project/lol_look_look/src-tauri/target/debug/resources/pengu/core.dll\")"
     ]
   }
 }
